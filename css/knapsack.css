@@ -1,0 +1,13 @@
+.knapsack .area {
+}
+
+.knapsack .object {
+    width: 150px;
+    height: 150px;
+    float: left;
+    text-align: center;
+}
+
+.knapsack .object img {
+    height: 100px;
+}
