@@ -17,7 +17,7 @@ var Knapsack = function(max_bag_mass) {
     };
 
     this.canAddToBag = function(o) {
-        return mBagMass <= mMaxBagMass + o.mass;
+        return mBagMass + o.mass <= mMaxBagMass;
     };
 
     this.hasInBag = function(o) {
@@ -38,12 +38,12 @@ var Knapsack = function(max_bag_mass) {
         }
 
         mCollectedObjects[o.id] = o;
-        delete mUncollectedObjects[o];
+        delete mUncollectedObjects[o.id];
         mBagMass += o.mass;
         mBagPrice += o.price;
 
-        this.trigger('added:bag', o);
         this.trigger('removed:pile', o);
+        this.trigger('added:bag', o);
         this.trigger('moved:pile_bag', o);
         return true;
     };
@@ -54,7 +54,7 @@ var Knapsack = function(max_bag_mass) {
         }
 
         mUncollectedObjects[o.id] = 0;
-        delete mCollectedObjects[o];
+        delete mCollectedObjects[o.id];
         mBagMass -= o.mass;
         mBagPrice -= o.price;
 
