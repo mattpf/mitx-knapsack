@@ -2,10 +2,18 @@ var KnapsackUI = function(container, model, controller) {
     var mContainer = $(container); // Force jQuery.
     var self = this; // 'this' is a remarkably finicky thing. Stash the real one.
     var mController = controller;
+    var mKnapsack = model;
+    // Main row
     var mItemView = $('<div class="item-collection area well span6">');
     var mBagView = $('<div class="bag-collection area well span6">');
     var mRow = $('<div class="row-fluid">').append(mItemView, mBagView);
-    var mKnapsack = model;
+    // Title row
+    var mItemTitle = $('<div class="span6">Available items ($<span class="price">10</span>)</div>');
+    var mBagTitle = $('<div class="span6">Knapsack ($<span class="price">0</span>; <span class="mass">0</span> kg)</div>');
+    var mItemPriceSpan = mItemTitle.find('.price');
+    var mBagPriceSpan = mBagTitle.find('.price');
+    var mBagMassSpan = mBagTitle.find('.mass');
+    var mTitleRow = $('<div class="row-fluid titles">').append(mItemTitle, mBagTitle);
 
     var create_node = function(o) {
         // If we already have a node, just return it.
@@ -43,16 +51,24 @@ var KnapsackUI = function(container, model, controller) {
         });
     }
 
+    var update_titles = function() {
+        mItemPriceSpan.text(mKnapsack.totalPrice() - mKnapsack.bagPrice());
+        mBagMassSpan.text(mKnapsack.bagMass());
+        mBagPriceSpan.text(mKnapsack.bagPrice());
+    }
+
     // Callback when something is added to the pile.
     var handle_added_pile = function(o) {
         var node = create_node(o);
         mItemView.append(node);
+        update_titles();
     };
 
     // Callback when something is removed from the pile.
     var handle_removed_pile = function(o) {
         if(!o.userdata.node) return;
         o.userdata.node.remove();
+        update_titles();
     };
 
     // Callback when something is added to the bag.
@@ -60,6 +76,7 @@ var KnapsackUI = function(container, model, controller) {
         var node = create_node(o);
         mBagView.append(node);
         update_node_displays();
+        update_titles();
     };
 
     // Callback when something is removed from the bag.
@@ -67,6 +84,7 @@ var KnapsackUI = function(container, model, controller) {
         if(!o.userdata.node) return;
         o.userdata.node.remove();
         update_node_displays();
+        update_titles();
     };
 
     var move_into_place = function(new_parent, element, callback) {
@@ -148,7 +166,7 @@ var KnapsackUI = function(container, model, controller) {
         });
 
         // Now wipe it and build our own UI!
-        mContainer.empty().append(mRow);
+        mContainer.empty().append(mRow, mTitleRow);
         // Fix the heights of both boxes, now that we have some idea what they
         // should be.
         mBagView.css({height: mItemView.height()});

@@ -8,3 +8,9 @@
 .knapsack .object img {
     height: 100px;
 }
+
+.knapsack .titles {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+}
