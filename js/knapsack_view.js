@@ -1,5 +1,5 @@
 var KnapsackUI = function(container, model, controller) {
-    container = $(container); // Force jQuery.
+    var mContainer = $(container); // Force jQuery.
     var self = this; // 'this' is a remarkably finicky thing. Stash the real one.
     var mController = controller;
     var mItemView = $('<div class="item-collection area well span6">');
@@ -25,30 +25,48 @@ var KnapsackUI = function(container, model, controller) {
         node.data('object', o);
 
         node.draggable({
-            revert: "invalid"
+            revert: "invalid",
+            zIndex: 100
         });
         return node;
     }
 
+    // Changes the labels to reflect whether the item is still usable.
+    var update_node_displays = function() {
+        // Mark labels as problematic if they've over the mass limit.
+        mItemView.children().each(function() {
+            if(!mKnapsack.canAddToBag($(this).data('object'))) {
+                $(this).find('.label').addClass('label-important');
+            } else {
+                $(this).find('.label').removeClass('label-important');
+            }
+        });
+    }
+
+    // Callback when something is added to the pile.
     var handle_added_pile = function(o) {
         var node = create_node(o);
         mItemView.append(node);
     };
 
+    // Callback when something is removed from the pile.
     var handle_removed_pile = function(o) {
         if(!o.userdata.node) return;
         o.userdata.node.remove();
     };
 
+    // Callback when something is added to the bag.
     var handle_added_bag = function(o) {
         var node = create_node(o);
-        console.log(node);
         mBagView.append(node);
+        update_node_displays();
     };
 
+    // Callback when something is removed from the bag.
     var handle_removed_bag = function(o) {
         if(!o.userdata.node) return;
         o.userdata.node.remove();
+        update_node_displays();
     };
 
     var move_into_place = function(new_parent, element, callback) {
@@ -65,20 +83,27 @@ var KnapsackUI = function(container, model, controller) {
         var indicator = $('<div class="object">').appendTo(new_parent);
         var new_pos = indicator.offset();
         indicator.remove();
-        element.css({
+        // While we're animating we want to appear on top of everything
+        // already in the thing.
+        // Since the pile is a prior sibling to the bag in the DOM, we
+        // can't do that using z-index alone (it's in the wrong stacking
+        // context). To work around, we move the element to mContainer, which
+        // is parent to both boxes.
+        element.appendTo(mContainer).css({
             position: 'absolute',
             top: pos.top,
-            left: pos.left
+            left: pos.left,
+            'z-index': 100
         }).animate({
             top: new_pos.top,
             left: new_pos.left
         }, function() {
-            console.log(callback);
             if(callback)
                 callback(element.data('object'));
         });
     };
 
+    // Pass this off to the controller to do something useful.
     var handle_item_drop = function(e, ui) {
         move_into_place(mItemView, ui.draggable, mController.itemRemovedFromBag);
     };
@@ -87,13 +112,14 @@ var KnapsackUI = function(container, model, controller) {
         move_into_place(mBagView, ui.draggable, mController.itemMovedToBag);
     };
 
+    // Called while an item to the bag to see if that's valid.
     var check_bag_drop = function(node) {
         var o = node.data('object');
         if(!mKnapsack.hasInPile(o)) return false;
         return mKnapsack.canAddToBag(o);
     }
 
-    this.initialise = function() {
+    var initialise = function() {
         // Set up drag/drop on our containers.
         mItemView.droppable({
             accept: '.bag-collection .object'
@@ -111,7 +137,7 @@ var KnapsackUI = function(container, model, controller) {
         mKnapsack.on('removed:bag', handle_removed_bag);
 
         // Pull out our original contents.
-        container.find('img').each(function() {
+        mContainer.find('img').each(function() {
             var img = $(this);
             mKnapsack.addItem(
                 img.data('name'),       // name
@@ -122,12 +148,12 @@ var KnapsackUI = function(container, model, controller) {
         });
 
         // Now wipe it and build our own UI!
-        container.empty().append(mRow);
+        mContainer.empty().append(mRow);
         // Fix the heights of both boxes, now that we have some idea what they
         // should be.
         mBagView.css({height: mItemView.height()});
         mItemView.css({height: mItemView.height()});
     };
 
-    this.initialise();
+    initialise();
 };
