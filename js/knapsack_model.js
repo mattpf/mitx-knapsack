@@ -86,4 +86,5 @@ var Knapsack = function(max_bag_mass) {
     this.bagPrice = function() { return mBagPrice; };
     this.totalMass = function() { return mTotalMass; };
     this.totalPrice = function() { return mTotalPrice; };
+    this.maxBagMass = function() { return mMaxBagMass; };
 };

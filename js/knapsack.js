@@ -4,4 +4,5 @@ $(function() {
     var controller = new KnapsackController(knapsack);
 
     new KnapsackUI(container, knapsack, controller);
+    new KnapsackProgress(container, knapsack);
 });
