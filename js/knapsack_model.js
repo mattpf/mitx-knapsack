@@ -82,9 +82,16 @@ var Knapsack = function(max_bag_mass) {
         return true;
     };
 
+    this.getItemById = function(id) {
+        if(_.has(mCollectedObjects, id)) return mCollectedObjects[id];
+        if(_.has(mUncollectedObjects, id)) return mUncollectedObjects[id];
+        return null;
+    };
+
     this.bagMass = function() { return mBagMass; };
     this.bagPrice = function() { return mBagPrice; };
     this.totalMass = function() { return mTotalMass; };
     this.totalPrice = function() { return mTotalPrice; };
     this.maxBagMass = function() { return mMaxBagMass; };
+    this.bagItems = function() { return _.extend({}, mCollectedObjects); } // return a copy
 };

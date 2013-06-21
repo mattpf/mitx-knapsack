@@ -28,3 +28,13 @@
     left: 10px;
     text-shadow: 0px 0px 2px black;
 }
+
+.knapsack .best hr {
+    margin: 5px;
+}
+
+.knapsack .best .total {
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}

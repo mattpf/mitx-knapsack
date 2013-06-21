@@ -5,4 +5,11 @@ $(function() {
 
     new KnapsackUI(container, knapsack, controller);
     new KnapsackProgress(container, knapsack);
+    new KnapsackPersister(knapsack);
+
+    // KnapsackBest expects to have a space set up for it already.
+    var mainRow = container.find('.main-row');
+    var bestContainer = $('<div class="span2 best">');
+    mainRow.append(bestContainer);
+    new KnapsackBest(bestContainer, knapsack);
 });

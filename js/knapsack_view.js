@@ -4,12 +4,12 @@ var KnapsackUI = function(container, model, controller) {
     var mController = controller;
     var mKnapsack = model;
     // Main row
-    var mItemView = $('<div class="item-collection area well span6">');
-    var mBagView = $('<div class="bag-collection area well span6">');
-    var mRow = $('<div class="row-fluid">').append(mItemView, mBagView);
+    var mItemView = $('<div class="item-collection area well span5">');
+    var mBagView = $('<div class="bag-collection area well span5">');
+    var mRow = $('<div class="row-fluid main-row">').append(mItemView, mBagView);
     // Title row
-    var mItemTitle = $('<div class="span6">Available items ($<span class="price">10</span>)</div>');
-    var mBagTitle = $('<div class="span6">Knapsack ($<span class="price">0</span>; <span class="mass">0</span> kg)</div>');
+    var mItemTitle = $('<div class="span5">Available items ($<span class="price">10</span>)</div>');
+    var mBagTitle = $('<div class="span5">Knapsack ($<span class="price">0</span>; <span class="mass">0</span> kg)</div>');
     var mItemPriceSpan = mItemTitle.find('.price');
     var mBagPriceSpan = mBagTitle.find('.price');
     var mBagMassSpan = mBagTitle.find('.mass');
@@ -21,7 +21,7 @@ var KnapsackUI = function(container, model, controller) {
         var node = null;
         if(o.userdata.node) {
             node = o.userdata.node.removeAttr('style');
-        } else { 
+        } else {
         // Otherwise build a new one.
             node = $('<div class="object">');
             var label = $('<p class="label">').append(o.name + ' ($' + o.price + '; ' + o.mass + 'kg)');
