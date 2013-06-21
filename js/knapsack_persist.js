@@ -14,6 +14,8 @@ var KnapsackPersister = function(model) {
         );
     });
 
+    // *HACK: Chrome apparently has a race condition. This hacks around it in five minutes.
+    setTimeout(function() {
     if(localStorage['kpBagContents']) {
         var ids = JSON.parse(localStorage['kpBagContents']);
         for(var i = 0; i < ids.length; ++i) {
@@ -24,4 +26,5 @@ var KnapsackPersister = function(model) {
             }
         }
     }
+    }, 110);
 };

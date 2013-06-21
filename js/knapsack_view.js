@@ -169,8 +169,11 @@ var KnapsackUI = function(container, model, controller) {
         mContainer.empty().append(mRow, mTitleRow);
         // Fix the heights of both boxes, now that we have some idea what they
         // should be.
-        mBagView.css({height: mItemView.height()});
-        mItemView.css({height: mItemView.height()});
+        // *HACK: Chrome apparently has a race condition. This hacks around it in five minutes.
+        setTimeout(function() {
+            mBagView.css({height: mItemView.height()});
+            mItemView.css({height: mItemView.height()});
+        }, 100);
     };
 
     initialise();
